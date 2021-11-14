@@ -6,19 +6,31 @@ Just download the needed Script/s to `/usr/local/sbin` and give them the excute 
 
 # Usage
 ## backup-docker-volume.sh
-This Script backups docker volumes of the system to a defined Path. You could define the volumes and the backup path in the script itself. Also you could configure the days, how long the backup files will remain as backup. After configuration of the script, you could just start it with
+This Script backups docker volumes of the system to a defined Path. You could define the volumes and the backup path in the script itself. Also you could configure the days, how long the backup files will remain as backup. After configuration of the script, you could just start it with:
+
 `backup-docker-volume.sh`
 
 ## backup-docker-mysql.sh
+This Script backups mysql or maria db containers with `mysqldump`. Just define the backup folder in the script and start it with:
 
+`backup-docker-mysql.sh`
+
+You can also configure the days, the backupfiles will remain in the backup folder.
 
 ## backup-docker-postgres.sh
+This Script backups postgres database containers with `pg_dumpall`. Just define the backup folder in the script and start it with:
+
+`backup-docker-postgres.sh`
+
+You can also configure the days, the backupfiles will remain in the backup folder.
 
 
 ## backup-docker-compose.sh
+With the help of `backup-docker-compose.sh` you are able to backup the whole docker-compose project folder of each docker-compose project you are running. It uses `tar.gz` to archive all the files and folders to the predifined backup folder. Just configure the script in the top and run it:
 
+`backup-docker-compose.sh`
 
-
+You can also configure the days, the backupfiles will remain in the backup folder.
 
 # More Informations you could find here:
 * https://www.laub-home.de/wiki/Docker_Backup_und_Restore_-_eine_kleine_Anleitung
