@@ -17,7 +17,7 @@ This Script backups mysql or maria db containers with `mysqldump`. Just define t
 
 You can also configure the days, the backupfiles will remain in the backup folder.
 
-Attention: If you are using Docker Secrets, it will not work. More informations here: #1
+Attention: If you are using Docker Secrets, it will not work. More informations here: (#1)[https://github.com/alaub81/backup_docker_scripts/issues/1]
 
 ## backup-docker-postgres.sh
 This Script backups postgres database containers with `pg_dumpall`. Just define the backup folder in the script and start it with:
