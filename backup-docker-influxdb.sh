@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+#########################################################################
+#Name: backup-docker-influxdb.sh
+#Subscription: This Script backups docker influxdb containers,
+#or better dumps their databases to a backup directory
+##by A. Laub
+#andreas[-at-]laub-home.de
+#
+#License:
+#This program is free software: you can redistribute it and/or modify it
+#under the terms of the GNU General Public License as published by the
+#Free Software Foundation, either version 3 of the License, or (at your option)
+#any later version.
+#This program is distributed in the hope that it will be useful,
+#but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+#or FITNESS FOR A PARTICULAR PURPOSE.
+#########################################################################
+#Set the language
+export LANG="en_US.UTF-8"
+#Load the Pathes
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+# set the variables
+
+# Where to store the Backup files?
+# mount that directory to /backup into the influxdb containers
+BACKUPDIR=/backup/influxdb
+
+# How many Days should a backup be available?
+DAYS=2
+
+# Timestamp definition for the backupfiles (example: $(date +"%Y%m%d%H%M") = 20200124-2034)
+TIMESTAMP=$(date +"%Y%m%d%H%M")
+
+# Which Containers do you want to backup?
+# Container names separated by space
+#CONTAINER="influxdbcontainer1 influxdbcontainer2 influxdbcontainer3"
+# you can use "$(docker ps --format '{{.Names}}:{{.Image}}' | grep 'influxdb' | cut -d":" -f1)"
+# for all containers which are using influxdb images
+#CONTAINER=$(docker ps --format '{{.Names}}:{{.Image}}' | grep 'influxdb' | cut -d":" -f1)
+# you can filter all containers with grep (include only) or grep -v (exclude) or a combination of both
+# to do a filter for 2 or more arguments separate them with "\|"
+# example: $(docker ps --format '{{.Names}}:{{.Image}}' | grep 'influxdb' | cut -d":" -f1 | grep -v 'container1\|container2')
+#CONTAINER=$(docker ps --format '{{.Names}}:{{.Image}}' | grep 'influxdb' | cut -d":" -f1 | grep -v 'container1\|container2')
+#CONTAINER=$(docker ps --format '{{.Names}}:{{.Image}}' | grep 'influxdb' | cut -d":" -f1)
+CONTAINER="influxdb2_influxdb_1 influxdb_influxdb_1"
+#CONTAINER="influxdb2_influxdb_1"
+
+### Do the stuff
+echo -e "Start $TIMESTAMP Backup for Databases: \n"
+if [ ! -d $BACKUPDIR ]; then
+	mkdir -p $BACKUPDIR
+fi
+
+for i in $CONTAINER; do
+	echo -e " create Backup for Database on Container:\n  * $i";
+	docker exec -e i=$i -e TIMESTAMP=$TIMESTAMP $i influx backup --compression gzip /backup/$i-$TIMESTAMP > /dev/null 2>&1 
+	# dont delete last old backups!
+	OLD_BACKUPS=$(ls -1 $BACKUPDIR/$i* |wc -l)
+	if [ $OLD_BACKUPS -gt $DAYS ]; then
+		find $BACKUPDIR -maxdepth 1 -name "$i" -type d -daystart -mtime +$DAYS -type d -exec rm -rf {} \;
+	fi
+done
+echo -e "\n$TIMESTAMP Backup for Databases completed\n"
