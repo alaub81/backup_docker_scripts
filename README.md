@@ -26,6 +26,12 @@ This Script backups postgres database containers with `pg_dumpall`. Just define 
 
 You can also configure the days, the backupfiles will remain in the backup folder.
 
+## backup-docker-influxdb.sh
+This Script backups influxdb database containers with `influx backup`. Just define the backup folder in the script mount it into the container under `/backup` and start it with:
+
+`backup-docker-influxdb.sh`
+
+You can also configure the days, the backupfiles will remain in the backup folder.
 
 ## backup-docker-compose.sh
 With the help of `backup-docker-compose.sh` you are able to backup the whole docker-compose project folder of each docker-compose project you are running. It uses `tar.gz` to archive all the files and folders to the predifined backup folder. Just configure the script in the top and run it:
@@ -37,6 +43,7 @@ You can also configure the days, the backupfiles will remain in the backup folde
 # More Informations you could find here:
 * https://www.laub-home.de/wiki/Docker_Backup_und_Restore_-_eine_kleine_Anleitung
 * https://www.laub-home.de/wiki/Docker_Postgres_Backup_Script
+* https://www.laub-home.de/wiki/Docker_InfluxDB_2_Backup_Script
 * https://www.laub-home.de/wiki/Docker_Volume_Backup_Script
 * https://www.laub-home.de/wiki/Docker_MySQL_and_MariaDB_Backup_Script
 * https://www.laub-home.de/wiki/Docker_Compose_Project_Backup_Script
