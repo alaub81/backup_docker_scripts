@@ -41,9 +41,7 @@ TIMESTAMP=$(date +"%Y%m%d%H%M")
 # to do a filter for 2 or more arguments separate them with "\|"
 # example: $(docker ps --format '{{.Names}}:{{.Image}}' | grep 'influxdb' | cut -d":" -f1 | grep -v 'container1\|container2')
 #CONTAINER=$(docker ps --format '{{.Names}}:{{.Image}}' | grep 'influxdb' | cut -d":" -f1 | grep -v 'container1\|container2')
-#CONTAINER=$(docker ps --format '{{.Names}}:{{.Image}}' | grep 'influxdb' | cut -d":" -f1)
-CONTAINER="influxdb2_influxdb_1 influxdb_influxdb_1"
-#CONTAINER="influxdb2_influxdb_1"
+CONTAINER=$(docker ps --format '{{.Names}}:{{.Image}}' | grep 'influxdb' | cut -d":" -f1)
 
 ### Do the stuff
 echo -e "Start $TIMESTAMP Backup for Databases: \n"
