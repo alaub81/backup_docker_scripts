@@ -55,7 +55,7 @@ for i in $CONTAINER; do
 	# dont delete last old backups!
 	OLD_BACKUPS=$(ls -d1 $BACKUPDIR/$i* |wc -l)
 	if [ $OLD_BACKUPS -gt $DAYS ]; then
-		find $BACKUPDIR -maxdepth 1 -name "$i" -type d -daystart -mtime +$DAYS -type d -exec rm -rf {} \;
+		find $BACKUPDIR -maxdepth 1 -name "$i*" -type d -daystart -mtime +$DAYS -type d -exec rm -rf {} \;
 	fi
 done
 echo -e "\n$TIMESTAMP Backup for Databases completed\n"
