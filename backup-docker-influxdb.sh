@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #########################################################################
 #Name: backup-docker-influxdb.sh
-#Subscription: This Script backups docker influxdb containers,
+#Subscription: This Script backups docker influxdb 2 containers,
 #or better dumps their databases to a backup directory
 ##by A. Laub
 #andreas[-at-]laub-home.de
@@ -53,7 +53,7 @@ for i in $CONTAINER; do
 	echo -e " create Backup for Database on Container:\n  * $i";
 	docker exec -e i=$i -e TIMESTAMP=$TIMESTAMP $i influx backup --compression gzip /backup/$i-$TIMESTAMP > /dev/null 2>&1 
 	# dont delete last old backups!
-	OLD_BACKUPS=$(ls -1 $BACKUPDIR/$i* |wc -l)
+	OLD_BACKUPS=$(ls -d1 $BACKUPDIR/$i* |wc -l)
 	if [ $OLD_BACKUPS -gt $DAYS ]; then
 		find $BACKUPDIR -maxdepth 1 -name "$i" -type d -daystart -mtime +$DAYS -type d -exec rm -rf {} \;
 	fi
