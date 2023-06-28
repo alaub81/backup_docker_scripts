@@ -15,7 +15,7 @@ This Script backups docker volumes of the system to a defined Path. You could de
 
 ### backup-docker-mysql.sh
 
-This Script backups mysql or maria db containers with `mysqldump`. Just define the backup folder in the script and start it with:
+This Script backups mysql or mariaDB containers with `mysqldump`. Just define the backup folder in the script and start it with:
 
 `backup-docker-mysql.sh`
 
