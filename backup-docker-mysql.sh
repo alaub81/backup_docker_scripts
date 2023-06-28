@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 #########################################################################
 #Name: backup-docker-mysql.sh
 #Subscription: This Script backups docker mysql or mariadb containers,
