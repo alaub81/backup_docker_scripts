@@ -60,12 +60,12 @@ for i in $CONTAINER; do
         MYSQL_DATABASE=$(docker exec $i env | grep MYSQL_DATABASE |cut -d"=" -f2)
         MYSQL_PWD=$(docker exec $i env | grep MYSQL_ROOT_PASSWORD |cut -d"=" -f2)
 	# check for dump method
-	if docker exec -it $i test -e /usr/bin/mysqldump; then
+	if docker exec $i test -e /usr/bin/mysqldump; then
         	echo -e " create MYSQL Backup for Database on Container:\n  * $MYSQL_DATABASE DB on $i";
         	docker exec -e MYSQL_DATABASE=$MYSQL_DATABASE -e MYSQL_PWD=$MYSQL_PWD \
                 	$i /usr/bin/mysqldump -u root $MYSQL_DATABASE \
                 	| gzip > $BACKUPDIR/$i-$MYSQL_DATABASE-$TIMESTAMP.sql.gz
-	elif docker exec -it $i test -e /usr/bin/mariadb-dump; then
+	elif docker exec $i test -e /usr/bin/mariadb-dump; then
         	echo -e " create MariaDB Backup for Database on Container:\n  * $MYSQL_DATABASE DB on $i";
         	docker exec -e MYSQL_DATABASE=$MYSQL_DATABASE -e MYSQL_PWD=$MYSQL_PWD \
                 	$i /usr/bin/mariadb-dump -u root $MYSQL_DATABASE \
