@@ -80,7 +80,7 @@ done
 # dont delete last old backups!
 OLD_BACKUPS=$(ls -1 $BACKUPDIR/$i*.gz |wc -l)
 	if [ $OLD_BACKUPS -gt $DAYS ]; then
-	find $BACKUPDIR -name "$i*.gz" -daystart -mtime +$DAYS -delete
+		find $BACKUPDIR -name "$i*.gz" -daystart -mtime +$DAYS -delete
 	fi
     done
 echo -e "\n$TIMESTAMP Backup for Databases completed\n"
