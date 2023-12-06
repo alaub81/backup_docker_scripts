@@ -39,7 +39,7 @@ TIMESTAMP=$(date +"%Y%m%d%H%M")
 
 # Which Containers do you want to backup?
 # Container names separated by space
-# CONTAINER="mysqlcontainer1 mysqlcontainer2 mysqlcontainer3"
+#CONTAINER="mysqlcontainer1 mysqlcontainer2 mysqlcontainer3"
 # you can use "$(docker ps --format '{{.Names}}:{{.Image}}' | grep 'mysql\|mariadb' | cut -d":" -f1)"
 # for all containers which are using mysql or mariadb images
 #CONTAINER=$(docker ps --format '{{.Names}}:{{.Image}}' | grep 'mysql\|mariadb' | cut -d":" -f1)
