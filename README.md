@@ -47,6 +47,19 @@ With the help of `backup-docker-compose.sh` you are able to backup the whole doc
 
 You can also configure the days, the backupfiles will remain in the backup folder.
 
+### recovery-docker-mysql.sh
+
+With that script you are able to select the previous stored backup (`BACKUPDIR=/backup/mysql` pls change that, if needed) 
+and recover it to the same Container and Database.
+
+* Just store the Script in `/usr/local/sbin` and make it executable: `sudo chmod +x /usr/local/sbin/recovery-docker-mysql.sh`
+* To start a recovery, execute the script with the following command: `sudo ./recovery-docker-mysql.sh`<br>
+  (root permission is needed as it will grap the MySQL root pw from the Docker Env. If you are using Docker Secrets, it will not work. You need to store the PW in the Script manually: MYSQL_PWD='yourpw')
+
+The script will read trough the backup store and will ask you to select the Container, Database and Backup (Date-Time) you want to recover.
+When you then approve the task at the end of the script, it will start a recovery within the docker container.
+(There is no mysql completion message, but you will get a security issue, as a cleartype password is used to connect to mysql)
+
 ## More Informations you could find here:
 
 * https://www.laub-home.de/wiki/Docker_Backup_und_Restore_-_eine_kleine_Anleitung
