@@ -71,8 +71,10 @@ for i in $CONTAINER; do
 				$i /usr/bin/mysqldump -u root $MYSQL_DATABASE | gzip > $BACKUPDIR/$i-$MYSQL_DATABASE-$TIMESTAMP.sql.gz
 		done		
 	elif docker exec $i test -e /usr/bin/mariadb-dump; then
-	    # Get a list of databases in the container
-    	DATABASES=$(docker exec -e MYSQL_PWD=$MYSQL_PWD $i mariadb -uroot -s -e "show databases" | grep -Ev "(Database|information_schema|performance_schema|mysql)")
+	    # Get the IP of the DB-Container
+        IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $i);
+        # Get a list of databases in the container
+		DATABASES=$(docker exec -e MYSQL_PWD=$MYSQL_PWD $i mariadb -uroot -h $IP -s -e "show databases" | grep -Ev "(Database|information_schema|performance_schema|mysql)")
     	# Loop through each database and create a backup
     	for MYSQL_DATABASE in $DATABASES; do
 			# Start Backup
