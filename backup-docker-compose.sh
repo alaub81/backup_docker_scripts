@@ -57,7 +57,9 @@ for i in $COMPOSE; do
 	PROJECTNAME=${i##*/}
 	echo -e " Backup von Compose Project:\n  * $PROJECTNAME";
 	cd $i
+ 	docker compose pause
 	tar -czf $BACKUPDIR/$PROJECTNAME-$TIMESTAMP.tar.gz .
+ 	docker compose unpause
 	# dont delete last old backups!
 	OLD_BACKUPS=$(ls -1 $BACKUPDIR/$PROJECTNAME*.tar.gz |wc -l)
 	if [ $OLD_BACKUPS -gt $DAYS ]; then
