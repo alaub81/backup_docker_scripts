@@ -5,7 +5,10 @@ BACKUPDIR="/backup/mysql"
 
 # Display a numbered list of containers from the backup directory
 echo "Available containers:"
-mapfile -t CONTAINERS < <(docker ps --format '{{.Names}}:{{.Image}}' | grep 'mysql\|mariadb' | cut -d":" -f1)
+CONTAINERS=()
+while IFS= read -r line; do
+    CONTAINERS+=("$line")
+done < <(docker ps --format '{{.Names}}:{{.Image}}' | grep 'mysql\|mariadb' | cut -d":" -f1)
 for ((i=0; i<${#CONTAINERS[@]}; i++)); do
     echo "$((i+1)). ${CONTAINERS[$i]}"
 done
@@ -22,7 +25,10 @@ CONTAINER=${CONTAINERS[$((CONTAINER_NUMBER-1))]}
 
 # Display a numbered list of databases for the selected container
 echo "Available databases in container $CONTAINER:"
-mapfile -t DATABASES < <(for file in "$BACKUPDIR"/"$CONTAINER"*sql.gz; do 
+DATABASES=()
+while IFS= read -r line; do
+    DATABASES+=("$line")
+done < <(for file in "$BACKUPDIR"/"$CONTAINER"*sql.gz; do 
     filename=$(basename "$file" .sql.gz)
     db_part=${filename#"$CONTAINER"[^[:alnum:]]}    # Remove container prefix and any separator
     db_name=${db_part:0:-13}                        # Remove timestamp and its separator
@@ -44,7 +50,10 @@ DATABASENAME=${DATABASES[$((DATABASE_NUMBER-1))]}
 
 # Display a numbered list of timestamps for the selected container and database
 echo "Available timestamps for container $CONTAINER and database $DATABASENAME:"
-mapfile -t TIMESTAMPS < <(for file in "$BACKUPDIR"/"$CONTAINER"*"$DATABASENAME"*sql.gz; do
+TIMESTAMPS=()
+while IFS= read -r line; do
+    TIMESTAMPS+=("$line")
+done < <(for file in "$BACKUPDIR"/"$CONTAINER"*"$DATABASENAME"*sql.gz; do
     filename=$(basename "$file" .sql.gz)
     # Extract timestamp (12 digits) from the end of filename
     timestamp=${filename:(-12)}
