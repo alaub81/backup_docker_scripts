@@ -57,31 +57,31 @@ if [ ! -d $BACKUPDIR ]; then
 fi
 
 for i in $CONTAINER; do
-    MYSQL_PWD=$(docker exec $i env | grep MYSQL_ROOT_PASSWORD | cut -d"=" -f2)
-
 	# check for dump method mariadb / mysql
 	if docker exec $i test -e /usr/bin/mysqldump; then
-	    # Get a list of databases in the container
-    	DATABASES=$(docker exec -e MYSQL_PWD=$MYSQL_PWD $i mysql -uroot -s -e "show databases" | grep -Ev "(Database|information_schema|performance_schema|mysql)")
-    	# Loop through each database and create a backup
-    	for MYSQL_DATABASE in $DATABASES; do
+		MYSQL_PWD=$(docker exec $i env | grep MYSQL_ROOT_PASSWORD | cut -d"=" -f2)
+		# Get a list of databases in the container
+		DATABASES=$(docker exec -e MYSQL_PWD=$MYSQL_PWD $i mysql -uroot -s -e "show databases" | grep -Ev "(Database|information_schema|performance_schema|mysql)")
+		# Loop through each database and create a backup
+		for MYSQL_DATABASE in $DATABASES; do
 			# Start Backup
-	    	echo -e " create MYSQL Backup for Database on Container:\n  * $MYSQL_DATABASE DB on $i";
-	    	docker exec -e MYSQL_DATABASE=$MYSQL_DATABASE -e MYSQL_PWD=$MYSQL_PWD \
+			echo -e " create MYSQL Backup for Database on Container:\n  * $MYSQL_DATABASE DB on $i";
+			docker exec -e MYSQL_DATABASE=$MYSQL_DATABASE -e MYSQL_PWD=$MYSQL_PWD \
 				$i /usr/bin/mysqldump -u root $MYSQL_DATABASE | gzip > $BACKUPDIR/$i-$MYSQL_DATABASE-$TIMESTAMP.sql.gz
-		done		
+		done
 	elif docker exec $i test -e /usr/bin/mariadb-dump; then
-	    # Get a list of databases in the container
-    	DATABASES=$(docker exec -e MYSQL_PWD=$MYSQL_PWD $i mariadb -uroot -s -e "show databases" | grep -Ev "(Database|information_schema|performance_schema|mysql)")
-    	# Loop through each database and create a backup
-    	for MYSQL_DATABASE in $DATABASES; do
+		MARIADB_PWD=$(docker exec $i env | grep MARIADB_ROOT_PASSWORD | cut -d"=" -f2)
+		# Get a list of databases in the container
+		DATABASES=$(docker exec -e MYSQL_PWD=$MARIADB_PWD $i mariadb -uroot -s -e "show databases" | grep -Ev "(Database|information_schema|performance_schema|mysql)")
+		# Loop through each database and create a backup
+		for MYSQL_DATABASE in $DATABASES; do
 			# Start Backup
-	    	echo -e " create MariaDB Backup for Database on Container:\n  * $MYSQL_DATABASE DB on $i";
-	    	docker exec -e MYSQL_DATABASE=$MYSQL_DATABASE -e MYSQL_PWD=$MYSQL_PWD \
+			echo -e " create MariaDB Backup for Database on Container:\n  * $MYSQL_DATABASE DB on $i";
+			docker exec -e MYSQL_DATABASE=$MYSQL_DATABASE -e MYSQL_PWD=$MARIADB_PWD \
 				$i /usr/bin/mariadb-dump -u root $MYSQL_DATABASE | gzip > $BACKUPDIR/$i-$MYSQL_DATABASE-$TIMESTAMP.sql.gz
 		done
 	else
-	    echo " ERROR: cannot find dump command for container $i!"
+		echo " ERROR: cannot find dump command for container $i!"
 	fi
 	# dont delete last old backups!
 	OLD_BACKUPS=$(ls -1 $BACKUPDIR/$i*.gz |wc -l)
