@@ -46,6 +46,9 @@ COMPOSE=$ALLPROJECTS
 #COMPOSE=$(echo -e "$ALLPROJECTS" | grep 'project1\|project2' | grep -v 'database')
 #COMPOSE=$(echo -e "$ALLPROJECTS" | grep -v 'mailcow-dockerized')
 
+#Files you want to exclude from the backup (uncomment to use)
+#EXCLUDEFILES="--exclude=/opt/syslogserver/data/syslog-ng/log/*"
+
 
 ### Do the stuff
 echo -e "Start $TIMESTAMP Backup for Docker Compose Projects:\n"
@@ -57,7 +60,7 @@ for i in $COMPOSE; do
 	PROJECTNAME=${i##*/}
 	echo -e " Backup von Compose Project:\n  * $PROJECTNAME";
 	cd $i
-	tar -czf $BACKUPDIR/$PROJECTNAME-$TIMESTAMP.tar.gz .
+	tar -czf $BACKUPDIR/$PROJECTNAME-$TIMESTAMP.tar.gz $EXCLUDEFILES .
 	# dont delete last old backups!
 	OLD_BACKUPS=$(ls -1 $BACKUPDIR/$PROJECTNAME*.tar.gz |wc -l)
 	if [ $OLD_BACKUPS -gt $DAYS ]; then
