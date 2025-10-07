@@ -51,7 +51,9 @@ fi
 
 for i in $CONTAINER; do
 	echo -e " create Backup for Database on Container:\n  * $i";
-	docker exec -e i=$i -e TIMESTAMP=$TIMESTAMP $i influx backup --compression gzip /backup/$i-$TIMESTAMP > /dev/null 2>&1 
+	# Read Admin Token for Backup
+	ADMIN_TOKEN=$(docker exec $i env | grep DOCKER_INFLUXDB_INIT_ADMIN_TOKEN | cut -d"=" -f2)
+	docker exec -e i=$i -e TIMESTAMP=$TIMESTAMP -e ADMIN_TOKEN=$ADMIN_TOKEN $i influx backup --token $ADMIN_TOKEN --compression gzip /backup/$i-$TIMESTAMP > /dev/null 2>&1 
 	# dont delete last old backups!
 	OLD_BACKUPS=$(ls -d1 $BACKUPDIR/$i* |wc -l)
 	if [ $OLD_BACKUPS -gt $DAYS ]; then
