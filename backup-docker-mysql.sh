@@ -70,7 +70,7 @@ for i in $CONTAINER; do
 				$i /usr/bin/mysqldump -u root $MYSQL_DATABASE | gzip > $BACKUPDIR/$i-$MYSQL_DATABASE-$TIMESTAMP.sql.gz
 		done
 	elif docker exec $i test -e /usr/bin/mariadb-dump; then
-		MARIADB_PWD=$(docker exec $i env | grep MARIADB_ROOT_PASSWORD | cut -d"=" -f2)
+		MARIADB_PWD=$(docker exec $i env | grep -E '^(MYSQL|MARIADB)_ROOT_PASSWORD=' | cut -d"=" -f2)
 		# Get a list of databases in the container
 		DATABASES=$(docker exec -e MYSQL_PWD=$MARIADB_PWD $i mariadb -uroot -s -e "show databases" | grep -Ev "(Database|information_schema|performance_schema|mysql)")
 		# Loop through each database and create a backup
